@@ -18,6 +18,32 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 Source code: https://github.com/rafsaf/openmargonem
 
 */ //!
+import {
+  AddonDescription,
+  AddonOnList,
+  addonIconListSelector,
+  addonDescriptionListSelector,
+  addonModalButton,
+} from "./addon";
 var OpenMargonemClientSetup = async () => {
   console.log("start OpenMargonemClientSetup");
+
+  window.addEventListener(
+    "load",
+    function () {
+      const addonModalBtn = addonModalButton();
+      addonModalBtn.addEventListener("", () => {
+        const autoHealId = 21031123123;
+        console.log("event!");
+        addonIconListSelector().appendChild(
+          AddonOnList(autoHealId, "OM AutoHeal", false)
+        );
+        addonDescriptionListSelector().append(
+          AddonDescription(autoHealId, "Open Margonem AutoHeal")
+        );
+      });
+    },
+    false
+  );
 };
+OpenMargonemClientSetup();

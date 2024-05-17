@@ -1,8 +1,9 @@
 require("esbuild").build({
-  entryPoints: ["src/*.ts"],
+  entryPoints: ["src/index.ts"],
+  bundle: true,
   minify: true,
-  target: ["es2017"],
+  outfile: "public/bundle.js",
+  target: ["chrome58", "firefox57", "safari11", "edge16"],
   platform: "node",
-  outdir: "public",
-  legalComments: "inline",
+  //   legalComments: "inline",
 });
