@@ -1,0 +1,20 @@
+{
+  "name": "openmargonem",
+  "version": "0.0.1",
+  "description": "Free and open source margonem scripts",
+  "main": "build.js",
+  "scripts": {
+    "build": "node build.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "."
+  },
+  "author": "",
+  "license": "AGPL-3.0-only",
+  "dependencies": {
+    "esbuild": "^0.21.3",
+    "typescript": "^5.4.5"
+  }
+}
