@@ -25,10 +25,18 @@ import {
   OpenMargonemAddonCreate,
 } from "./addon";
 
-export const OpenMargonemAddonAutoHealOptFull: AddonOption = {
-  optionKey: "OpenMargonemAddonAutoHealOptFull",
-  type: AddonType.boolean,
-  default: true,
+const OpenMargonemAddonAutoHealOptMinHealth: AddonOption = {
+  optionKey: "OpenMargonemAddonAutoHealOptMinHealth",
+  type: AddonType.range,
+  default: 90,
+  max: 100,
+  min: 1,
+};
+
+const OpenMargonemAddonAutoHealOptUseConsumable: AddonOption = {
+  optionKey: "OpenMargonemAddonAutoHealOptUseConsumable",
+  type: AddonType.checkbox,
+  default: 1,
   max: null,
   min: null,
 };
@@ -46,19 +54,27 @@ export const OpenMargonemAddonAutoHealSetup = () => {
       name: "OM AutoHeal",
       description: "OpenMargonem AutoHeal<br/>",
       optionTranslations: {
-        OpenMargonemAddonAutoHealOptFull: "Uleczenie do pełnego życia",
+        OpenMargonemAddonAutoHealOptMinHealth:
+          "<br/>Minimalna procentowa ilość zdrowia<br/>",
+        OpenMargonemAddonAutoHealOptUseConsumable:
+          "Używaj przemiotów konsumpcyjnych",
       },
     },
     en: {
       name: "OM AutoHeal",
       description: "OpenMargonem AutoHeal<br/>",
       optionTranslations: {
-        OpenMargonemAddonAutoHealOptFull: "Full hp healing",
+        OpenMargonemAddonAutoHealOptMinHealth:
+          "<br/>Minimum health percentage allowed<br/>",
+        OpenMargonemAddonAutoHealOptUseConsumable: "Use consumable items",
       },
     },
     image: "/img/gui/addons-icons.png|-376 -34",
     options: false,
-    addonOptions: [OpenMargonemAddonAutoHealOptFull],
+    addonOptions: [
+      OpenMargonemAddonAutoHealOptMinHealth,
+      OpenMargonemAddonAutoHealOptUseConsumable,
+    ],
     id: "openmargonem-1",
     install: OpenMargonemAddonAutoHealInstall,
     uninstall: OpenMargonemAddonAutoHealUninstall,

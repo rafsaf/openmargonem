@@ -19,8 +19,8 @@ Source code: https://github.com/rafsaf/openmargonem
 */
 
 export enum AddonType {
-  number = "number",
-  boolean = "boolean",
+  range = "range",
+  checkbox = "checkbox",
 }
 export interface AddonOptionsTranslations {
   [optionKey: string]: string;
@@ -28,7 +28,7 @@ export interface AddonOptionsTranslations {
 
 export interface AddonOption {
   optionKey: string;
-  default: number | boolean;
+  default: number;
   type: AddonType;
   max: number | null;
   min: number | null;
@@ -49,21 +49,60 @@ export interface Addon {
   uninstall: () => void;
 }
 
+const OpenMargonemAddonInputGetValue = (
+  addon: Addon,
+  option: AddonOption
+): number => {
+  const uniqueId = `openmargonem-addons-${addon.id}-${option.optionKey}`;
+
+  const val = localStorage.getItem(uniqueId);
+  if (val === null) {
+    return option.default;
+  }
+  return parseInt(val);
+};
+
+const OpenMargonemAddonInput = (addon: Addon, option: AddonOption): string => {
+  const addonLang: AddonLanguage = addon[_l()];
+  const uniqueId = `openmargonem-addons-${addon.id}-${option.optionKey}`;
+  const value = OpenMargonemAddonInputGetValue(addon, option);
+
+  const wrapper = document.createElement("div");
+  const input = document.createElement("input");
+  const label = document.createElement("label");
+  const br = document.createElement("br");
+  let rangeSpan: HTMLSpanElement | null = null;
+
+  input.setAttribute("id", uniqueId);
+  input.setAttribute("name", option.optionKey);
+  input.setAttribute("type", option.type);
+  input.setAttribute("value", String(value));
+  label.setAttribute("for", uniqueId);
+  if (option.type === AddonType.range) {
+    rangeSpan = document.createElement("span");
+    rangeSpan.setAttribute("id", `${uniqueId}-range`);
+    rangeSpan.textContent = String(value);
+    input.setAttribute("min", String(option.min));
+    input.setAttribute("max", String(option.max));
+    label.append(rangeSpan);
+  }
+
+  label.innerHTML += addonLang.optionTranslations[option.optionKey];
+  input.setAttribute(
+    "oninput",
+    `localStorage.setItem('${uniqueId}', this.value);const label = document.getElementById('${uniqueId}-range');if (label !== null) {label.textContent = this.value;}`
+  );
+
+  wrapper.append(br, input, label);
+
+  return wrapper.innerHTML;
+};
+
 export const OpenMargonemAddonCreate = (addon: Addon) => {
   const addonLang: AddonLanguage = addon[_l()];
-  let description = addonLang.description;
   for (let option of addon.addonOptions) {
-    const uniqueId = `openmargonem-addons-${addon.id}-${option.optionKey}`;
-    if (option.type === AddonType.boolean) {
-      description +=
-        "<br/>" +
-        `<input type="checkbox" id="${uniqueId}" name="${option.optionKey}">` +
-        '<label for="${uniqueId}">' +
-        addonLang.optionTranslations[option.optionKey] +
-        "</label>";
-    }
+    addonLang.description += OpenMargonemAddonInput(addon, option);
   }
-  addonLang.description = description;
 
   window.Engine.addonsPanel.createOneAddonOnList(addon, addon.id);
   window.Engine.addonsPanel.createOneAddonDescription(addon, addon.id);
