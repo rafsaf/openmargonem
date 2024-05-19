@@ -28,15 +28,23 @@ interface AddonsPanel {
   createOneAddonDescription: (data: object, addonId: string) => void;
   setButtonState: (id: string, active: boolean) => void;
   setWindgetColor: (id: string, active: boolean) => void;
-  oneAddonManageVisible: (id: string) => void;
+  getStorageStateOfAddon: (id: string) => boolean;
+  getAddonIdKey: (id: string) => string;
+  setStateAddon: (
+    data: object,
+    active: boolean,
+    id: string,
+    p1: any,
+    p2: any
+  ) => void;
 }
 
 var Engine: MargonemEngine;
 var getEngine: () => MargonemEngine;
+const baseAddonId = "openmargonem";
 
 var OpenMargonemClientRun = () => {
   console.log("start OpenMargonemClientRun");
-
   var autohealData = {
     pl: {
       name: "Autoheal",
@@ -62,6 +70,46 @@ var OpenMargonemClientRun = () => {
   );
   window.Engine.addonsPanel.setButtonState(autohealData["id"], true);
   window.Engine.addonsPanel.setWindgetColor(autohealData["id"], true);
+  const originalGetStorageStateOfAddon =
+    window.Engine.addonsPanel.getStorageStateOfAddon;
+  window.Engine.addonsPanel.getStorageStateOfAddon = (id: string) => {
+    if (id.startsWith(baseAddonId)) {
+      let active = localStorage.getItem(
+        `OpenMargonemClientRun-${baseAddonId}-${id}-active`
+      );
+      if (active !== null) {
+        return true;
+      }
+      return false;
+    }
+
+    return originalGetStorageStateOfAddon(id);
+  };
+  const originalSetStateAddon = window.Engine.addonsPanel.setStateAddon;
+  window.Engine.addonsPanel.setStateAddon = (
+    data: object,
+    active: boolean,
+    id: string,
+    p1: any,
+    p2: any
+  ) => {
+    if (id.startsWith(baseAddonId)) {
+      if (active) {
+        localStorage.setItem(
+          `OpenMargonemClientRun-${baseAddonId}-${id}-active`,
+          "1"
+        );
+      } else {
+        localStorage.removeItem(
+          `OpenMargonemClientRun-${baseAddonId}-${id}-active`
+        );
+      }
+      window.Engine.addonsPanel.setButtonState(autohealData["id"], active);
+      window.Engine.addonsPanel.setWindgetColor(autohealData["id"], active);
+    }
+
+    return originalSetStateAddon(data, active, id, p1, p2);
+  };
 };
 
 var OpenMargonemClientSetup = setInterval(function () {
