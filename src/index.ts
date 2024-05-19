@@ -16,8 +16,7 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 Source code: https://github.com/rafsaf/openmargonem
-
-*/ //!
+*/
 
 interface MargonemEngine {
   addonsPanel: AddonsPanel;
@@ -41,11 +40,11 @@ interface AddonsPanel {
 
 var Engine: MargonemEngine;
 var getEngine: () => MargonemEngine;
-const baseAddonId = "openmargonem";
 
-var OpenMargonemClientRun = () => {
-  console.log("start OpenMargonemClientRun");
-  var autohealData = {
+const OpenMargonemRun = () => {
+  console.log(`start ${OpenMargonemRun}`);
+
+  const autohealData = {
     pl: {
       name: "Autoheal",
       description:
@@ -73,9 +72,9 @@ var OpenMargonemClientRun = () => {
   const originalGetStorageStateOfAddon =
     window.Engine.addonsPanel.getStorageStateOfAddon;
   window.Engine.addonsPanel.getStorageStateOfAddon = (id: string) => {
-    if (id.startsWith(baseAddonId)) {
+    if (id.startsWith("openmargonem")) {
       let active = localStorage.getItem(
-        `OpenMargonemClientRun-${baseAddonId}-${id}-active`
+        `${OpenMargonemRun}-${"openmargonem"}-${id}-active`
       );
       if (active !== null) {
         return true;
@@ -93,15 +92,15 @@ var OpenMargonemClientRun = () => {
     p1: any,
     p2: any
   ) => {
-    if (id.startsWith(baseAddonId)) {
+    if (id.startsWith("openmargonem")) {
       if (active) {
         localStorage.setItem(
-          `OpenMargonemClientRun-${baseAddonId}-${id}-active`,
+          `${OpenMargonemRun}-${"openmargonem"}-${id}-active`,
           "1"
         );
       } else {
         localStorage.removeItem(
-          `OpenMargonemClientRun-${baseAddonId}-${id}-active`
+          `${OpenMargonemRun}-${"openmargonem"}-${id}-active`
         );
       }
       window.Engine.addonsPanel.setButtonState(autohealData["id"], active);
@@ -112,20 +111,16 @@ var OpenMargonemClientRun = () => {
   };
 };
 
-var OpenMargonemClientSetup = setInterval(function () {
+const OpenMargonemSetup = setInterval(() => {
   if (typeof window.Engine == "undefined") {
-    console.log("OpenMargonemClientSetup - Engine undefined");
+    console.debug("window.Engine is not ready, sleeping...");
     return;
   }
   if (!("addonsPanel" in window.Engine)) {
-    console.log("OpenMargonemClientSetup - Engine.addonsPanel undefined");
+    console.debug("window.Engine.addonsPanel is not ready, sleeping...");
     return;
   }
-  if (window.Engine.addonsPanel === null) {
-    console.log("OpenMargonemClientSetup - Engine.addonsPanel undefined");
-    return;
-  }
-  clearInterval(OpenMargonemClientSetup);
+  clearInterval(OpenMargonemSetup);
 
-  OpenMargonemClientRun();
+  OpenMargonemRun();
 }, 100);

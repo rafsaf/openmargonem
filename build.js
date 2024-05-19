@@ -1,9 +1,11 @@
 require("esbuild").build({
   entryPoints: ["src/index.ts"],
   bundle: true,
-  minify: true,
+  minifyWhitespace: true,
   outfile: "public/bundle.js",
-  target: ["chrome58", "firefox57", "safari11", "edge16"],
-  platform: "node",
-  //   legalComments: "inline",
+  target: ["es2018"],
+  format: "cjs",
+  globalName: "OpenMargonemRun",
+  keepNames: true,
+  legalComments: "eof",
 });
