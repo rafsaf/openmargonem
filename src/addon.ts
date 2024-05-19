@@ -18,16 +18,36 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 Source code: https://github.com/rafsaf/openmargonem
 
 */ //!
-export const addonModalButton = () => {
-  return document.querySelector(`[tip-id="296"], [index="0"]`);
+// export const addonModalButton = () => {
+//   return document.querySelector(
+//     `[widget-pos="top-right"], [index="0"], [class="widget-in-interface-bar"]`
+//   );
+// };
+
+var autohealData = {
+  pl: {
+    name: "Autoheal",
+    description: "Autoheal <b>test</b>.",
+  },
+  en: {
+    name: "Autoheal",
+    description: "Autoheal <b>test</b>.",
+  },
+  image: "/img/gui/addons-icons.png|-376 -34",
+  options: 1,
+  id: "200000",
 };
+
 export const addonIconListSelector = () => {
   const panel = document.getElementsByClassName("addons-panel")[0];
   return panel.getElementsByClassName("addon-list")[0];
 };
 export const addonDescriptionListSelector = () => {
   const panel = document.getElementsByClassName("addons-panel")[0];
-  return panel.getElementsByClassName("scroll-pane")[0];
+  const rightPanel = panel.getElementsByClassName(
+    "right-scroll scroll-wrapper classic-bar"
+  )[0];
+  return rightPanel.getElementsByClassName("scroll-pane")[0];
 };
 
 export const AddonOnList = (
@@ -55,6 +75,7 @@ const AddonOnListTitle = (name: string): HTMLDivElement => {
   title.appendChild(titleText);
   title.classList.add("addon-title");
   titleWrapper.classList.add("title-wrapper");
+  titleWrapper.appendChild(title);
 
   return titleWrapper;
 };
@@ -65,7 +86,7 @@ const AddonOnListIcon = (activated: boolean): HTMLDivElement => {
   const icon = document.createElement("div");
 
   imgWrapperInner.appendChild(icon);
-  imgWrapper.appendChild(imgWrapper);
+  imgWrapper.appendChild(imgWrapperInner);
 
   icon.classList.add("addon-img", "icon");
   icon.setAttribute(
@@ -78,6 +99,8 @@ const AddonOnListIcon = (activated: boolean): HTMLDivElement => {
   } else {
     imgWrapperInner.classList.add("red");
   }
+  imgWrapperInner.setAttribute("style", "width: 44px; height: 44px;");
+
   imgWrapper.classList.add("img-wrapper");
 
   return imgWrapper;
@@ -116,7 +139,7 @@ const AddonDescriptionButton = () => {
 
   btnLabel.appendChild(label);
   innerWrapper.append(btnBackground, btnLabel);
-  wrapper.append(innerWrapper);
+  wrapper.appendChild(innerWrapper);
 
   wrapper.classList.add("on-off-button");
   innerWrapper.classList.add("button", "green", "small");
