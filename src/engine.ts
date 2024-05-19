@@ -1,4 +1,4 @@
-/*!
+/*
 openmargonem  
 Copyright (C) 2024  Rafał Safin <rafal.safin@rafsaf.pl>
 
@@ -17,31 +17,32 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 Source code: https://github.com/rafsaf/openmargonem
 */
+interface MargonemEngine {
+  addonsPanel: AddonsPanel;
+}
 
-import { OpenMargonemAddonSetup } from "./addon";
-import { OpenMargonemAddonAutoHealSetup } from "./autoheal";
+interface AddonsPanel {
+  createOneAddonOnList: (data: object, addonId: string) => void;
+  createOneAddonDescription: (data: object, addonId: string) => void;
+  setButtonState: (id: string, active: boolean) => void;
+  setWindgetColor: (id: string, active: boolean) => void;
+  getStorageStateOfAddon: (id: string) => boolean;
+  getAddonIdKey: (id: string) => string;
+  setStateAddon: (
+    data: object,
+    active: boolean,
+    id: string,
+    p1: any,
+    p2: any
+  ) => void;
+  startAddonScript: (
+    data: object,
+    id: string,
+    active: boolean,
+    p1: any
+  ) => void;
+}
 
-const OpenMargonemRun = () => {
-  console.log(`start OpenMargonemRun`);
-
-  OpenMargonemAddonSetup();
-  OpenMargonemAddonAutoHealSetup();
-};
-
-const OpenMargonemSetup = setInterval(() => {
-  if (typeof window.Engine == "undefined") {
-    console.info("window.Engine is not ready, sleeping...");
-    return;
-  }
-  if (!("addonsPanel" in window.Engine)) {
-    console.info("window.Engine.addonsPanel is not ready, sleeping...");
-    return;
-  }
-  if (window.Engine.addonsPanel === null) {
-    console.log("window.Engine.addonsPanel is not ready, sleeping...");
-    return;
-  }
-  clearInterval(OpenMargonemSetup);
-
-  OpenMargonemRun();
-}, 100);
+var Engine: MargonemEngine;
+// get language
+var _l: () => string;

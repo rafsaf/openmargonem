@@ -3,9 +3,8 @@ require("esbuild").build({
   bundle: true,
   minifyWhitespace: true,
   outfile: "public/bundle.js",
-  target: ["es2018"],
+  target: ["es2020"],
   format: "cjs",
-  globalName: "OpenMargonemRun",
   keepNames: true,
   legalComments: "eof",
 });
