@@ -19,8 +19,44 @@ Source code: https://github.com/rafsaf/openmargonem
 */
 interface MargonemEngine {
   addonsPanel: AddonsPanel;
+  hero: Hero;
+  item: Items;
+  API: MargonemAPI;
 }
 
+interface MargonemAPI {
+  addCallbackToEvent: (event: any, callback: Function) => void;
+  removeCallbackFromEvent: (event: any, callback: Function) => void;
+}
+
+interface Items {
+  fetchLocationItem: (type: string) => Item[];
+}
+interface Item {
+  _cachedStats: ItemStats;
+}
+
+interface ItemStats {
+  amount: string;
+  // normal healing potions eg. 5000 hp
+  leczy: string | null;
+  // percentage healing potions eg. always 15% hp
+  perheal: string | null;
+  // full hp healing potion eg. 100k hp potion
+  fullheal: string | null;
+}
+
+interface Hero {
+  d: WarriorData;
+}
+
+interface WarriorData {
+  warrior_stats: WarriorStats;
+}
+interface WarriorStats {
+  hp: number;
+  maxhp: number;
+}
 interface AddonsPanel {
   createOneAddonOnList: (data: object, addonId: string) => void;
   createOneAddonDescription: (data: object, addonId: string) => void;

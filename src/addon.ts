@@ -73,11 +73,11 @@ const AddonInput = (addon: Addon, option: AddonOption): string => {
   input.setAttribute("id", uniqueId);
   input.setAttribute("name", option.optionKey);
   input.setAttribute("type", option.type);
-  input.setAttribute("value", String(value));
   label.setAttribute("for", uniqueId);
   if (option.type === AddonType.range) {
     input.setAttribute("min", String(option.min));
     input.setAttribute("max", String(option.max));
+    input.setAttribute("value", String(value));
 
     rangeSpan = document.createElement("span");
     rangeSpan.setAttribute("id", `${uniqueId}-range`);
@@ -92,8 +92,11 @@ const AddonInput = (addon: Addon, option: AddonOption): string => {
   } else {
     input.setAttribute(
       "oninput",
-      `if (this.checked) {localStorage.setItem('${uniqueId}', '1')} else{localStorage.removeItem('${uniqueId}')};`
+      `if (this.checked) {localStorage.setItem('${uniqueId}', '1')} else{localStorage.setItem('${uniqueId}', '0')};`
     );
+    if (value === 1) {
+      input.setAttribute("checked", "checked");
+    }
   }
 
   label.innerHTML += addonLang.optionTranslations[option.optionKey];

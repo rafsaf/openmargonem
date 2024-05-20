@@ -27,9 +27,22 @@ const AutoHealOptMinHealth: AddonOption = {
   max: 100,
   min: 1,
 };
-
-const AutoHealOptUseConsumable: AddonOption = {
-  optionKey: "AutoHealOptUseConsumable",
+const AutoHealOptUseFull: AddonOption = {
+  optionKey: "AutoHealOptUseFull",
+  type: AddonType.checkbox,
+  default: 0,
+  max: null,
+  min: null,
+};
+const AutoHealOptUseNormal: AddonOption = {
+  optionKey: "AutoHealOptUseNormal",
+  type: AddonType.checkbox,
+  default: 1,
+  max: null,
+  min: null,
+};
+const AutoHealOptUsePercentage: AddonOption = {
+  optionKey: "AutoHealOptUsePercentage",
   type: AddonType.checkbox,
   default: 1,
   max: null,
@@ -50,7 +63,9 @@ export const AutoHealSetup = () => {
       description: "OpenMargonem AutoHeal<br/>",
       optionTranslations: {
         AutoHealOptMinHealth: "<br/>Minimalna procentowa ilość zdrowia<br/>",
-        AutoHealOptUseConsumable: "Używaj przemiotów konsumpcyjnych",
+        AutoHealOptUseFull: "Używaj mikstur pełnego leczenia",
+        AutoHealOptUseNormal: "Używaj normalnych mikstur",
+        AutoHealOptUsePercentage: "Używaj procentowych mikstur",
       },
     },
     en: {
@@ -58,12 +73,19 @@ export const AutoHealSetup = () => {
       description: "OpenMargonem AutoHeal<br/>",
       optionTranslations: {
         AutoHealOptMinHealth: "<br/>Minimum health percentage allowed<br/>",
-        AutoHealOptUseConsumable: "Use consumable items",
+        AutoHealOptUseFull: "Use full hp potions",
+        AutoHealOptUseNormal: "Use normal potions",
+        AutoHealOptUsePercentage: "Use percentage potions",
       },
     },
     image: "/img/gui/addons-icons.png|-376 -34",
     options: false,
-    addonOptions: [AutoHealOptMinHealth, AutoHealOptUseConsumable],
+    addonOptions: [
+      AutoHealOptMinHealth,
+      AutoHealOptUseFull,
+      AutoHealOptUseNormal,
+      AutoHealOptUsePercentage,
+    ],
     id: "openmargonem-1",
     install: AutoHealInstall,
     uninstall: AutoHealUninstall,
