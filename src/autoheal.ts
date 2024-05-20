@@ -18,67 +18,56 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 Source code: https://github.com/rafsaf/openmargonem
 */
 
-import {
-  AddonType,
-  Addon,
-  AddonOption,
-  OpenMargonemAddonCreate,
-} from "./addon";
+import { AddonType, Addon, AddonOption, AddonCreate } from "./addon";
 
-const OpenMargonemAddonAutoHealOptMinHealth: AddonOption = {
-  optionKey: "OpenMargonemAddonAutoHealOptMinHealth",
+const AutoHealOptMinHealth: AddonOption = {
+  optionKey: "AutoHealOptMinHealth",
   type: AddonType.range,
   default: 90,
   max: 100,
   min: 1,
 };
 
-const OpenMargonemAddonAutoHealOptUseConsumable: AddonOption = {
-  optionKey: "OpenMargonemAddonAutoHealOptUseConsumable",
+const AutoHealOptUseConsumable: AddonOption = {
+  optionKey: "AutoHealOptUseConsumable",
   type: AddonType.checkbox,
   default: 1,
   max: null,
   min: null,
 };
 
-const OpenMargonemAddonAutoHealInstall = () => {
-  console.log("hello from OpenMargonemAddonAutoHealInstall");
+const AutoHealInstall = () => {
+  console.log("hello from AutoHealInstall");
 };
-const OpenMargonemAddonAutoHealUninstall = () => {
-  console.log("hello from OpenMargonemAddonAutoHealUninstall");
+const AutoHealUninstall = () => {
+  console.log("hello from AutoHealUninstall");
 };
 
-export const OpenMargonemAddonAutoHealSetup = () => {
+export const AutoHealSetup = () => {
   const autoHeal: Addon = {
     pl: {
       name: "OM AutoHeal",
       description: "OpenMargonem AutoHeal<br/>",
       optionTranslations: {
-        OpenMargonemAddonAutoHealOptMinHealth:
-          "<br/>Minimalna procentowa ilość zdrowia<br/>",
-        OpenMargonemAddonAutoHealOptUseConsumable:
-          "Używaj przemiotów konsumpcyjnych",
+        AutoHealOptMinHealth: "<br/>Minimalna procentowa ilość zdrowia<br/>",
+        AutoHealOptUseConsumable: "Używaj przemiotów konsumpcyjnych",
       },
     },
     en: {
       name: "OM AutoHeal",
       description: "OpenMargonem AutoHeal<br/>",
       optionTranslations: {
-        OpenMargonemAddonAutoHealOptMinHealth:
-          "<br/>Minimum health percentage allowed<br/>",
-        OpenMargonemAddonAutoHealOptUseConsumable: "Use consumable items",
+        AutoHealOptMinHealth: "<br/>Minimum health percentage allowed<br/>",
+        AutoHealOptUseConsumable: "Use consumable items",
       },
     },
     image: "/img/gui/addons-icons.png|-376 -34",
     options: false,
-    addonOptions: [
-      OpenMargonemAddonAutoHealOptMinHealth,
-      OpenMargonemAddonAutoHealOptUseConsumable,
-    ],
+    addonOptions: [AutoHealOptMinHealth, AutoHealOptUseConsumable],
     id: "openmargonem-1",
-    install: OpenMargonemAddonAutoHealInstall,
-    uninstall: OpenMargonemAddonAutoHealUninstall,
+    install: AutoHealInstall,
+    uninstall: AutoHealUninstall,
   };
 
-  OpenMargonemAddonCreate(autoHeal);
+  AddonCreate(autoHeal);
 };

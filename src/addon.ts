@@ -49,10 +49,7 @@ export interface Addon {
   uninstall: () => void;
 }
 
-const OpenMargonemAddonInputGetValue = (
-  addon: Addon,
-  option: AddonOption
-): number => {
+const GetOptionValue = (addon: Addon, option: AddonOption): number => {
   const uniqueId = `openmargonem-addons-${addon.id}-${option.optionKey}`;
 
   const val = localStorage.getItem(uniqueId);
@@ -62,10 +59,10 @@ const OpenMargonemAddonInputGetValue = (
   return parseInt(val);
 };
 
-const OpenMargonemAddonInput = (addon: Addon, option: AddonOption): string => {
-  const addonLang: AddonLanguage = addon[_l()];
+const AddonInput = (addon: Addon, option: AddonOption): string => {
+  const addonLang: AddonLanguage = addon[window._l()];
   const uniqueId = `openmargonem-addons-${addon.id}-${option.optionKey}`;
-  const value = OpenMargonemAddonInputGetValue(addon, option);
+  const value = GetOptionValue(addon, option);
 
   const wrapper = document.createElement("div");
   const input = document.createElement("input");
@@ -106,10 +103,16 @@ const OpenMargonemAddonInput = (addon: Addon, option: AddonOption): string => {
   return wrapper.innerHTML;
 };
 
-export const OpenMargonemAddonCreate = (addon: Addon) => {
-  const addonLang: AddonLanguage = addon[_l()];
+export const AddonCreate = (addon: Addon) => {
+  if (!addon.id.startsWith("openmargonem")) {
+    console.error(
+      `name of addon: '${addon.id}' does not contain required 'openamrgonem' prefix`
+    );
+    return;
+  }
+  const addonLang: AddonLanguage = addon[window._l()];
   for (let option of addon.addonOptions) {
-    addonLang.description += OpenMargonemAddonInput(addon, option);
+    addonLang.description += AddonInput(addon, option);
   }
 
   window.Engine.addonsPanel.createOneAddonOnList(addon, addon.id);
@@ -124,7 +127,7 @@ export const OpenMargonemAddonCreate = (addon: Addon) => {
   );
 };
 
-export const OpenMargonemAddonSetup = () => {
+export const AddonSetup = () => {
   const originalGetStorageStateOfAddon =
     window.Engine.addonsPanel.getStorageStateOfAddon;
   window.Engine.addonsPanel.getStorageStateOfAddon = (id: string) => {

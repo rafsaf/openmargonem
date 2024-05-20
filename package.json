@@ -4,7 +4,7 @@
   "description": "Free and open source margonem scripts",
   "main": "build.js",
   "scripts": {
-    "build": "node build.js",
+    "build": "node build.js && cat openmargonem.base.user.js > public/openmargonem.user.js && cat public/bundle.js >> public/openmargonem.user.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {

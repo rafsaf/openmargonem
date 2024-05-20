@@ -1,4 +1,4 @@
-/*!
+/*
 openmargonem  
 Copyright (C) 2024  Rafał Safin <rafal.safin@rafsaf.pl>
 
@@ -18,27 +18,25 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 Source code: https://github.com/rafsaf/openmargonem
 */
 
-import { OpenMargonemAddonSetup } from "./addon";
-import { OpenMargonemAddonAutoHealSetup } from "./autoheal";
+import { AddonSetup } from "./addon";
+import { AutoHealSetup } from "./autoheal";
 
 const OpenMargonemRun = () => {
-  console.log(`start OpenMargonemRun`);
+  console.log(`openmargonem: started`);
 
-  OpenMargonemAddonSetup();
-  OpenMargonemAddonAutoHealSetup();
+  AddonSetup();
+  AutoHealSetup();
 };
 
 const OpenMargonemSetup = setInterval(() => {
   if (typeof window.Engine == "undefined") {
-    console.info("window.Engine is not ready, sleeping...");
-    return;
-  }
-  if (!("addonsPanel" in window.Engine)) {
-    console.info("window.Engine.addonsPanel is not ready, sleeping...");
+    console.info("openmargonem: window.Engine is not ready, sleeping...");
     return;
   }
   if (window.Engine.addonsPanel === null) {
-    console.log("window.Engine.addonsPanel is not ready, sleeping...");
+    console.log(
+      "openmargonem: window.Engine.addonsPanel is not ready, sleeping..."
+    );
     return;
   }
   clearInterval(OpenMargonemSetup);
