@@ -79,19 +79,27 @@ const OpenMargonemAddonInput = (addon: Addon, option: AddonOption): string => {
   input.setAttribute("value", String(value));
   label.setAttribute("for", uniqueId);
   if (option.type === AddonType.range) {
+    input.setAttribute("min", String(option.min));
+    input.setAttribute("max", String(option.max));
+
     rangeSpan = document.createElement("span");
     rangeSpan.setAttribute("id", `${uniqueId}-range`);
     rangeSpan.textContent = String(value);
-    input.setAttribute("min", String(option.min));
-    input.setAttribute("max", String(option.max));
+
     label.append(rangeSpan);
+
+    input.setAttribute(
+      "oninput",
+      `localStorage.setItem('${uniqueId}', this.value);const label = document.getElementById('${uniqueId}-range');if (label !== null) {label.textContent = this.value;}`
+    );
+  } else {
+    input.setAttribute(
+      "oninput",
+      `if (this.checked) {localStorage.setItem('${uniqueId}', '1')} else{localStorage.removeItem('${uniqueId}')};`
+    );
   }
 
   label.innerHTML += addonLang.optionTranslations[option.optionKey];
-  input.setAttribute(
-    "oninput",
-    `localStorage.setItem('${uniqueId}', this.value);const label = document.getElementById('${uniqueId}-range');if (label !== null) {label.textContent = this.value;}`
-  );
 
   wrapper.append(br, input, label);
 
