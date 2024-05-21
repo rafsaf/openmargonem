@@ -20,13 +20,16 @@ Source code: https://github.com/rafsaf/openmargonem
 interface MargonemEngine {
   addonsPanel: AddonsPanel;
   hero: Hero;
-  item: Items;
+  items: Items;
   API: MargonemAPI;
+}
+enum EngineCallbackEvent {
+  closeBattle = "close_battle",
 }
 
 interface MargonemAPI {
-  addCallbackToEvent: (event: any, callback: Function) => void;
-  removeCallbackFromEvent: (event: any, callback: Function) => void;
+  addCallbackToEvent: (event: EngineCallbackEvent, callback: Function) => void;
+  removeCallbackFromEvent: (event: EngineCallbackEvent, callback: Function) => void;
 }
 
 interface Items {
@@ -64,19 +67,8 @@ interface AddonsPanel {
   setWindgetColor: (id: string, active: boolean) => void;
   getStorageStateOfAddon: (id: string) => boolean;
   getAddonIdKey: (id: string) => string;
-  setStateAddon: (
-    data: object,
-    active: boolean,
-    id: string,
-    p1: any,
-    p2: any
-  ) => void;
-  startAddonScript: (
-    data: object,
-    id: string,
-    active: boolean,
-    p1: any
-  ) => void;
+  setStateAddon: (data: any, active: boolean, id: string, p1: any, p2: any) => void;
+  startAddonScript: (data: any, id: string, active: boolean, p1: any) => void;
 }
 
 var Engine: MargonemEngine;

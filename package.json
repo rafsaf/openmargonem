@@ -3,6 +3,11 @@
   "version": "0.0.1",
   "description": "Free and open source margonem scripts",
   "main": "build.js",
+  "prettier": {
+    "trailingComma": "es5",
+    "tabWidth": 2,
+    "printWidth": 110
+  },
   "scripts": {
     "build": "node build.js && cat openmargonem.base.user.js > public/openmargonem.user.js && cat public/bundle.js >> public/openmargonem.user.js",
     "test": "echo \"Error: no test specified\" && exit 1"

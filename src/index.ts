@@ -21,25 +21,23 @@ Source code: https://github.com/rafsaf/openmargonem
 import { AddonSetup } from "./addon";
 import { AutoHealSetup } from "./autoheal";
 
-const OpenMargonemRun = () => {
-  console.log(`openmargonem: started`);
+const Start = () => {
+  console.log("openmargonem: started");
 
   AddonSetup();
   AutoHealSetup();
 };
 
-const OpenMargonemSetup = setInterval(() => {
+const Init = setInterval(() => {
   if (typeof window.Engine == "undefined") {
     console.info("openmargonem: window.Engine is not ready, sleeping...");
     return;
   }
   if (window.Engine.addonsPanel === null) {
-    console.log(
-      "openmargonem: window.Engine.addonsPanel is not ready, sleeping..."
-    );
+    console.log("openmargonem: window.Engine.addonsPanel is not ready, sleeping...");
     return;
   }
-  clearInterval(OpenMargonemSetup);
+  clearInterval(Init);
 
-  OpenMargonemRun();
+  Start();
 }, 100);

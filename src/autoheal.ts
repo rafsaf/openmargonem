@@ -80,12 +80,7 @@ export const AutoHealSetup = () => {
     },
     image: "/img/gui/addons-icons.png|-376 -34",
     options: false,
-    addonOptions: [
-      AutoHealOptMinHealth,
-      AutoHealOptUseFull,
-      AutoHealOptUseNormal,
-      AutoHealOptUsePercentage,
-    ],
+    addonOptions: [AutoHealOptMinHealth, AutoHealOptUseFull, AutoHealOptUseNormal, AutoHealOptUsePercentage],
     id: "openmargonem-1",
     install: AutoHealInstall,
     uninstall: AutoHealUninstall,

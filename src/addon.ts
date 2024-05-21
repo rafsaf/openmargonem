@@ -108,9 +108,7 @@ const AddonInput = (addon: Addon, option: AddonOption): string => {
 
 export const AddonCreate = (addon: Addon) => {
   if (!addon.id.startsWith("openmargonem")) {
-    console.error(
-      `name of addon: '${addon.id}' does not contain required 'openamrgonem' prefix`
-    );
+    console.error(`name of addon: '${addon.id}' does not contain required 'openamrgonem' prefix`);
     return;
   }
   const addonLang: AddonLanguage = addon[window._l()];
@@ -121,18 +119,11 @@ export const AddonCreate = (addon: Addon) => {
   window.Engine.addonsPanel.createOneAddonOnList(addon, addon.id);
   window.Engine.addonsPanel.createOneAddonDescription(addon, addon.id);
   const active = window.Engine.addonsPanel.getStorageStateOfAddon(addon.id);
-  window.Engine.addonsPanel.setStateAddon(
-    addon,
-    active,
-    addon.id,
-    undefined,
-    undefined
-  );
+  window.Engine.addonsPanel.setStateAddon(addon, active, addon.id, undefined, undefined);
 };
 
 export const AddonSetup = () => {
-  const originalGetStorageStateOfAddon =
-    window.Engine.addonsPanel.getStorageStateOfAddon;
+  const originalGetStorageStateOfAddon = window.Engine.addonsPanel.getStorageStateOfAddon;
   window.Engine.addonsPanel.getStorageStateOfAddon = (id: string) => {
     if (id.startsWith("openmargonem")) {
       let active = localStorage.getItem(`openmargonem-addons-${id}-active`);
@@ -146,13 +137,7 @@ export const AddonSetup = () => {
   };
 
   const originalSetStateAddon = window.Engine.addonsPanel.setStateAddon;
-  window.Engine.addonsPanel.setStateAddon = (
-    addon: Addon,
-    active: boolean,
-    id: string,
-    p1: any,
-    p2: any
-  ) => {
+  window.Engine.addonsPanel.setStateAddon = (addon: Addon, active: boolean, id: string, p1: any, p2: any) => {
     if (id.startsWith("openmargonem")) {
       if (active) {
         localStorage.setItem(`openmargonem-addons-${id}-active`, "1");
@@ -170,12 +155,7 @@ export const AddonSetup = () => {
   };
 
   const originalStartAddonScript = window.Engine.addonsPanel.startAddonScript;
-  window.Engine.addonsPanel.startAddonScript = (
-    addon: Addon,
-    id: string,
-    active: boolean,
-    p1: any
-  ) => {
+  window.Engine.addonsPanel.startAddonScript = (addon: Addon, id: string, active: boolean, p1: any) => {
     if (id.startsWith("openmargonem")) {
       return;
     }
