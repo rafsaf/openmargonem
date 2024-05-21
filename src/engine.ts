@@ -21,15 +21,11 @@ interface MargonemEngine {
   addonsPanel: AddonsPanel;
   hero: Hero;
   items: Items;
-  API: MargonemAPI;
-}
-enum EngineCallbackEvent {
-  closeBattle = "close_battle",
 }
 
 interface MargonemAPI {
-  addCallbackToEvent: (event: EngineCallbackEvent, callback: Function) => void;
-  removeCallbackFromEvent: (event: EngineCallbackEvent, callback: Function) => void;
+  addCallbackToEvent: (event: string, callback: Function) => void;
+  removeCallbackFromEvent: (event: string, callback: Function) => void;
 }
 
 interface Items {
@@ -72,5 +68,6 @@ interface AddonsPanel {
 }
 
 var Engine: MargonemEngine;
+var API: MargonemAPI;
 // get language
 var _l: () => string;

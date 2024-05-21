@@ -49,11 +49,18 @@ const AutoHealOptUsePercentage: AddonOption = {
   min: null,
 };
 
+const UserAutoHeal = () => {
+  console.log("hello from UserAutoHeal");
+};
+
 const AutoHealInstall = () => {
-  console.log("hello from AutoHealInstall");
+  window.API.addCallbackToEvent("close_battle", UserAutoHeal);
+  UserAutoHeal();
 };
 const AutoHealUninstall = () => {
-  console.log("hello from AutoHealUninstall");
+  try {
+    window.API.removeCallbackFromEvent("close_battle", UserAutoHeal);
+  } catch {}
 };
 
 export const AutoHealSetup = () => {

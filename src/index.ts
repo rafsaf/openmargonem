@@ -21,13 +21,6 @@ Source code: https://github.com/rafsaf/openmargonem
 import { AddonSetup } from "./addon";
 import { AutoHealSetup } from "./autoheal";
 
-const Start = () => {
-  console.log("openmargonem: started");
-
-  AddonSetup();
-  AutoHealSetup();
-};
-
 const Init = setInterval(() => {
   if (typeof window.Engine == "undefined") {
     console.info("openmargonem: window.Engine is not ready, sleeping...");
@@ -39,5 +32,8 @@ const Init = setInterval(() => {
   }
   clearInterval(Init);
 
-  Start();
+  console.log("openmargonem: started");
+
+  AddonSetup();
+  AutoHealSetup();
 }, 100);
