@@ -49,8 +49,8 @@ export interface Addon {
   uninstall: () => void;
 }
 
-const GetOptionValue = (addon: Addon, option: AddonOption): number => {
-  const uniqueId = `openmargonem-addons-${addon.id}-${option.optionKey}`;
+export const GetOptionValue = (addonId: string, option: AddonOption): number => {
+  const uniqueId = `openmargonem-addons-${addonId}-${option.optionKey}`;
 
   const val = localStorage.getItem(uniqueId);
   if (val === null) {
@@ -62,7 +62,7 @@ const GetOptionValue = (addon: Addon, option: AddonOption): number => {
 const AddonInput = (addon: Addon, option: AddonOption): string => {
   const addonLang: AddonLanguage = addon[window._l()];
   const uniqueId = `openmargonem-addons-${addon.id}-${option.optionKey}`;
-  const value = GetOptionValue(addon, option);
+  const value = GetOptionValue(addon.id, option);
 
   const wrapper = document.createElement("div");
   const input = document.createElement("input");

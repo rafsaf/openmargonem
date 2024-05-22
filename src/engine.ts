@@ -21,6 +21,7 @@ interface MargonemEngine {
   addonsPanel: AddonsPanel;
   hero: Hero;
   items: Items;
+  dead: boolean;
 }
 
 interface MargonemAPI {
@@ -29,20 +30,22 @@ interface MargonemAPI {
 }
 
 interface Items {
-  fetchLocationItem: (type: string) => Item[];
+  fetchLocationItems: (type: string) => Item[];
 }
 interface Item {
+  id: string;
+  name: string;
   _cachedStats: ItemStats;
 }
 
 interface ItemStats {
   amount: string;
   // normal healing potions eg. 5000 hp
-  leczy: string | null;
+  leczy: string | undefined;
   // percentage healing potions eg. always 15% hp
-  perheal: string | null;
+  perheal: string | undefined;
   // full hp healing potion eg. 100k hp potion
-  fullheal: string | null;
+  fullheal: string | undefined;
 }
 
 interface Hero {
@@ -71,3 +74,5 @@ var Engine: MargonemEngine;
 var API: MargonemAPI;
 // get language
 var _l: () => string;
+// to run tasks?
+var _g: (cmd: string) => void;
