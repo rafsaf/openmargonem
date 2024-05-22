@@ -112,7 +112,7 @@ export const AddonCreate = (addon: Addon) => {
     return;
   }
   const addonLang: AddonLanguage = addon[window._l()];
-  for (let option of addon.addonOptions) {
+  for (const option of addon.addonOptions) {
     addonLang.description += AddonInput(addon, option);
   }
 
@@ -126,7 +126,7 @@ export const AddonSetup = () => {
   const originalGetStorageStateOfAddon = window.Engine.addonsPanel.getStorageStateOfAddon;
   window.Engine.addonsPanel.getStorageStateOfAddon = (id: string) => {
     if (id.startsWith("openmargonem")) {
-      let active = localStorage.getItem(`openmargonem-addons-${id}-active`);
+      const active = localStorage.getItem(`openmargonem-addons-${id}-active`);
       if (active !== null) {
         return true;
       }

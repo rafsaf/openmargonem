@@ -6,9 +6,9 @@ beforeEach(() => {
   const sleepMock = jest.spyOn(autoheal, "sleep");
   sleepMock.mockImplementation(() => new Promise(() => {}));
 
-  // @ts-ignore
+  // @ts-expect-error dummy init engine
   window.Engine = {};
-  // @ts-ignore
+  // @ts-expect-error dummy init engine
   window.Engine.items = {};
 });
 

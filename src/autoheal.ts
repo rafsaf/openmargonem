@@ -61,12 +61,12 @@ const getToMinHp = (minHealth: number) => {
 
 const WarriorAutoHeal = async () => {
   const minHealth = GetOptionValue("openmargonem-1", AutoHealOptMinHealth);
-  let toMinHp = getToMinHp(minHealth);
+  const toMinHp = getToMinHp(minHealth);
   if (toMinHp === 0 || window.Engine.dead) {
     // return early, nothing to do
     return;
   }
-  let toFullHp = getToFullHp();
+  const toFullHp = getToFullHp();
   const useNormal = GetOptionValue("openmargonem-1", AutoHealOptUseNormal) === 1;
   const usePerc = GetOptionValue("openmargonem-1", AutoHealOptUsePercentage) === 1;
   const useFull = GetOptionValue("openmargonem-1", AutoHealOptUseFull) === 1;
