@@ -19,6 +19,7 @@ Source code: https://github.com/rafsaf/openmargonem
 */
 
 import { AddonType, Addon, AddonOption, AddonCreate, GetOptionValue } from "./addon";
+import Sleep from "./sleep";
 
 const AutoHealOptMinHealth: AddonOption = {
   optionKey: "AutoHealOptMinHealth",
@@ -48,7 +49,7 @@ const AutoHealOptUsePercentage: AddonOption = {
   max: null,
   min: null,
 };
-export const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
+
 const getToFullHp = () => {
   return Math.max(window.Engine.hero.d.warrior_stats.maxhp - window.Engine.hero.d.warrior_stats.hp, 0);
 };
@@ -84,50 +85,51 @@ export const AutoHealPlease = async (
     let items: Item[] = window.Engine.items.fetchLocationItems("g").filter((item: Item) => {
       return item._cachedStats.leczy !== undefined;
     });
-    while (toMinHp > 0 && items.length > 0) {
-      items = window.Engine.items
-        .fetchLocationItems("g")
-        .filter((item: Item) => {
-          return item._cachedStats.leczy !== undefined;
-        })
-        .sort((item1: Item, item2: Item) => {
-          const heal1 = parseInt(item1._cachedStats.leczy!);
-          const heal2 = parseInt(item2._cachedStats.leczy!);
+    while (toMinHp > 0) {
+      items = window.Engine.items.fetchLocationItems("g").filter((item: Item) => {
+        return item._cachedStats.leczy !== undefined;
+      });
+      items.sort((item1: Item, item2: Item) => {
+        const heal1 = parseInt(item1._cachedStats.leczy!);
+        const heal2 = parseInt(item2._cachedStats.leczy!);
 
-          if (heal1 > toFullHp && heal2 > toFullHp) {
-            // case1 both potions are more to than full hp
-            // less hp potion is better
-            // if same hp, use one with less amount
-            const diff = heal1 - heal2;
-            if (diff == 0) {
-              return parseInt(item1._cachedStats.amount!) - parseInt(item2._cachedStats.amount!);
-            }
-            return diff;
-          } else if (heal1 > toFullHp && heal2 <= toFullHp) {
-            // case2 first potion more than to full hp
-            // second potion always better
-            return -1;
-          } else if (heal1 <= toFullHp && heal2 > toFullHp) {
-            // case3 second potion more than to full hp
-            // first potion always better
-            return 1;
-          } else if (heal1 <= toFullHp && heal2 <= toFullHp) {
-            // case4 both less than to full hp
-            // more hp potion is better
-            // if same hp, use one with less amount
-            const diff = heal2 - heal1;
-            if (diff == 0) {
-              return parseInt(item1._cachedStats.amount!) - parseInt(item2._cachedStats.amount!);
-            }
-            return diff;
+        if (heal1 > toFullHp && heal2 > toFullHp) {
+          // case1 both potions are more to than full hp
+          // less hp potion is better
+          // if same hp, use one with less amount
+          const diff = heal1 - heal2;
+          if (diff == 0) {
+            return parseInt(item1._cachedStats.amount!) - parseInt(item2._cachedStats.amount!);
           }
-          return 0;
-        });
+          return diff;
+        } else if (heal1 > toFullHp && heal2 <= toFullHp) {
+          // case2 first potion more than to full hp
+          // second potion always better
+          return 1;
+        } else if (heal1 <= toFullHp && heal2 > toFullHp) {
+          // case3 second potion more than to full hp
+          // first potion always better
+          return -1;
+        } else if (heal1 <= toFullHp && heal2 <= toFullHp) {
+          // case4 both less than to full hp
+          // more hp potion is better
+          // if same hp, use one with less amount
+          const diff = heal2 - heal1;
+          if (diff == 0) {
+            return parseInt(item1._cachedStats.amount!) - parseInt(item2._cachedStats.amount!);
+          }
+          return diff;
+        }
+        return 0;
+      });
+      if (items.length === 0) {
+        break;
+      }
       console.debug("openmargonem: ah: sorted normal potions", items);
       window._g(`moveitem&st=1&id=${items[0].id}`);
       console.log(`openmargonem: ah: using ${items[0].name} (${items[0]._cachedStats.leczy}hp)`);
 
-      await sleep(300);
+      await Sleep(300);
 
       toMinHp = Math.max(toMinHp - parseInt(items[0]._cachedStats.leczy!), 0);
       toFullHp = Math.max(toFullHp - parseInt(items[0]._cachedStats.leczy!), 0);
