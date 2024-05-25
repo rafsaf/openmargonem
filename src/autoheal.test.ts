@@ -43,7 +43,7 @@ describe("No potions", () => {
     itemsMock.mockReturnValue(items);
     window.Engine.items.fetchLocationItems = itemsMock;
 
-    const [toMinHp, toFullHp] = await AutoHealPlease(500, 100, 200, true, false, false);
+    const [toMinHp, toFullHp] = await AutoHealPlease(500, {toFullHp: 200, toMinHp: 100}, true, false, false);
 
     expect(toMinHp).toBe(100);
     expect(toFullHp).toBe(200);
@@ -71,7 +71,7 @@ describe("No potions", () => {
     window.Engine.items.fetchLocationItems = itemsMock;
     itemsMock.mockReturnValue(items);
 
-    const [toMinHp, toFullHp] = await AutoHealPlease(500, 100, 200, true, false, false);
+    const [toMinHp, toFullHp] = await AutoHealPlease(500, {toFullHp: 200, toMinHp: 100}, true, false, false);
 
     expect(toMinHp).toBe(100);
     expect(toFullHp).toBe(200);
@@ -107,7 +107,7 @@ describe("Normal potions", () => {
     window.Engine.items.fetchLocationItems = itemsMock;
     itemsMock.mockReturnValue(items);
 
-    const [toMinHp, toFullHp] = await AutoHealPlease(500, 100, 200, true, false, false);
+    const [toMinHp, toFullHp] = await AutoHealPlease(500, {toFullHp: 200, toMinHp: 100}, true, false, false);
 
     expect(toMinHp).toBe(95);
     expect(toFullHp).toBe(195);
@@ -151,7 +151,7 @@ describe("Normal potions", () => {
     window.Engine.items.fetchLocationItems = itemsMock;
     itemsMock.mockReturnValue(items);
 
-    const [toMinHp, toFullHp] = await AutoHealPlease(500, 100, 200, true, false, false);
+    const [toMinHp, toFullHp] = await AutoHealPlease(500, {toFullHp: 200, toMinHp: 100}, true, false, false);
 
     expect(toMinHp).toBe(55);
     expect(toFullHp).toBe(155);
@@ -194,7 +194,7 @@ describe("Normal potions", () => {
     window.Engine.items.fetchLocationItems = itemsMock;
     itemsMock.mockReturnValue(items);
 
-    const [toMinHp, toFullHp] = await AutoHealPlease(500, 100, 200, true, false, false);
+    const [toMinHp, toFullHp] = await AutoHealPlease(500, {toFullHp: 200, toMinHp: 100}, true, false, false);
 
     expect(toMinHp).toBe(0);
     expect(toFullHp).toBe(40);
@@ -235,7 +235,7 @@ describe("Normal potions", () => {
     window.Engine.items.fetchLocationItems = itemsMock;
     itemsMock.mockReturnValue(items);
 
-    const [toMinHp, toFullHp] = await AutoHealPlease(500, 100, 200, true, false, false);
+    const [toMinHp, toFullHp] = await AutoHealPlease(500, {toFullHp: 200, toMinHp: 100}, true, false, false);
 
     expect(toMinHp).toBe(0);
     expect(toFullHp).toBe(0);
@@ -275,7 +275,7 @@ describe("Normal potions", () => {
     window.Engine.items.fetchLocationItems = itemsMock;
     itemsMock.mockReturnValue(items);
 
-    const [toMinHp, toFullHp] = await AutoHealPlease(500, 100, 200, true, false, false);
+    const [toMinHp, toFullHp] = await AutoHealPlease(500, {toFullHp: 200, toMinHp: 100}, true, false, false);
 
     expect(toMinHp).toBe(0);
     expect(toFullHp).toBe(0);
@@ -334,7 +334,7 @@ describe("Normal potions", () => {
     window.Engine.items.fetchLocationItems = itemsMock;
     itemsMock.mockReturnValue(items);
 
-    const [toMinHp, toFullHp] = await AutoHealPlease(500, 100, 200, true, false, false);
+    const [toMinHp, toFullHp] = await AutoHealPlease(500, {toFullHp: 200, toMinHp: 100}, true, false, false);
 
     expect(toMinHp).toBe(0);
     expect(toFullHp).toBe(100);
@@ -371,7 +371,7 @@ describe("Percent potions", () => {
     window.Engine.items.fetchLocationItems = itemsMock;
     itemsMock.mockReturnValue(items);
 
-    const [toMinHp, toFullHp] = await AutoHealPlease(500, 100, 200, true, false, false);
+    const [toMinHp, toFullHp] = await AutoHealPlease(500, {toFullHp: 200, toMinHp: 100}, false, true, false);
 
     expect(toMinHp).toBe(95);
     expect(toFullHp).toBe(195);
@@ -415,7 +415,7 @@ describe("Percent potions", () => {
     window.Engine.items.fetchLocationItems = itemsMock;
     itemsMock.mockReturnValue(items);
 
-    const [toMinHp, toFullHp] = await AutoHealPlease(500, 100, 200, true, false, false);
+    const [toMinHp, toFullHp] = await AutoHealPlease(500, {toFullHp: 200, toMinHp: 100}, false, true, false);
 
     expect(toMinHp).toBe(55);
     expect(toFullHp).toBe(155);
@@ -458,7 +458,7 @@ describe("Percent potions", () => {
     window.Engine.items.fetchLocationItems = itemsMock;
     itemsMock.mockReturnValue(items);
 
-    const [toMinHp, toFullHp] = await AutoHealPlease(500, 100, 200, true, false, false);
+    const [toMinHp, toFullHp] = await AutoHealPlease(500, {toFullHp: 200, toMinHp: 100}, false, true, false);
 
     expect(toMinHp).toBe(0);
     expect(toFullHp).toBe(40);

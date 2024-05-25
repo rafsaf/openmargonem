@@ -21,6 +21,11 @@ Source code: https://github.com/rafsaf/openmargonem
 import { AddonType, Addon, AddonOption, AddonCreate, GetOptionValue } from "./addon";
 import Sleep from "./sleep";
 
+interface AHData {
+  toMinHp: number;
+  toFullHp: number;
+}
+
 const AutoHealOptMinHealth: AddonOption = {
   optionKey: "AutoHealOptMinHealth",
   type: AddonType.range,
@@ -71,13 +76,12 @@ const WarriorAutoHeal = async () => {
   const useNormal = GetOptionValue("openmargonem-1", AutoHealOptUseNormal) === 1;
   const usePerc = GetOptionValue("openmargonem-1", AutoHealOptUsePercentage) === 1;
   const useFull = GetOptionValue("openmargonem-1", AutoHealOptUseFull) === 1;
-  return AutoHealPlease(maxHp, toMinHp, toFullHp, useNormal, usePerc, useFull);
+  return AutoHealPlease(maxHp, {toFullHp: toFullHp, toMinHp: toMinHp}, useNormal, usePerc, useFull);
 };
 
 export const AutoHealPlease = async (
   maxHp: number,
-  toMinHp: number,
-  toFullHp: number,
+  data: AHData,
   useNormal: boolean,
   usePerc: boolean,
   useFull: boolean
@@ -92,7 +96,7 @@ export const AutoHealPlease = async (
       }
     };
 
-    while (toMinHp > 0) {
+    while (data.toMinHp > 0) {
       let items: Item[];
       items = window.Engine.items.fetchLocationItems("g").filter((item: Item) => {
         if (useNormal && usePerc) {
@@ -107,7 +111,7 @@ export const AutoHealPlease = async (
         const heal1 = itemGetHeal(item1);
         const heal2 = itemGetHeal(item2);
 
-        if (heal1 > toFullHp && heal2 > toFullHp) {
+        if (heal1 > data.toFullHp && heal2 > data.toFullHp) {
           // case1 both potions are more to than full hp
           // less hp potion is better
           // if same hp, use one with less amount
@@ -116,15 +120,15 @@ export const AutoHealPlease = async (
             return parseInt(item1._cachedStats.amount!) - parseInt(item2._cachedStats.amount!);
           }
           return diff;
-        } else if (heal1 > toFullHp && heal2 <= toFullHp) {
+        } else if (heal1 > data.toFullHp && heal2 <= data.toFullHp) {
           // case2 first potion more than to full hp
           // second potion always better
           return 1;
-        } else if (heal1 <= toFullHp && heal2 > toFullHp) {
+        } else if (heal1 <= data.toFullHp && heal2 > data.toFullHp) {
           // case3 second potion more than to full hp
           // first potion always better
           return -1;
-        } else if (heal1 <= toFullHp && heal2 <= toFullHp) {
+        } else if (heal1 <= data.toFullHp && heal2 <= data.toFullHp) {
           // case4 both less than to full hp
           // more hp potion is better
           // if same hp, use one with less amount
@@ -145,12 +149,12 @@ export const AutoHealPlease = async (
 
       await Sleep(300);
 
-      toMinHp = Math.max(toMinHp - itemGetHeal(items[0]), 0);
-      toFullHp = Math.max(toFullHp - itemGetHeal(items[0]), 0);
+      data.toMinHp = Math.max(data.toMinHp - itemGetHeal(items[0]), 0);
+      data.toFullHp = Math.max(data.toFullHp - itemGetHeal(items[0]), 0);
     }
   }
-  if (toMinHp === 0) {
-    return [toMinHp, toFullHp];
+  if (data.toMinHp === 0) {
+    return [data.toMinHp, data.toFullHp];
   }
   if (useFull) {
     let items: Item[];
@@ -164,7 +168,7 @@ export const AutoHealPlease = async (
       return fullHeal1 - fullHeal2;
     });
     for (const item of items) {
-      if (toMinHp === 0) {
+      if (data.toMinHp === 0) {
         break;
       }
       window._g(`moveitem&st=1&id=${item.id}`);
@@ -172,11 +176,11 @@ export const AutoHealPlease = async (
 
       await Sleep(300);
 
-      toMinHp = Math.max(toMinHp - parseInt(item._cachedStats.fullheal!), 0);
-      toFullHp = Math.max(toFullHp - parseInt(item._cachedStats.fullheal!), 0);
+      data.toMinHp = Math.max(data.toMinHp - parseInt(item._cachedStats.fullheal!), 0);
+      data.toFullHp = Math.max(data.toFullHp - parseInt(item._cachedStats.fullheal!), 0);
     }
   }
-  return [toMinHp, toFullHp];
+  return [data.toMinHp, data.toFullHp];
 };
 
 const AutoHealInstall = () => {
