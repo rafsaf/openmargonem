@@ -43,12 +43,12 @@ describe("No potions", () => {
     itemsMock.mockReturnValue(items);
     window.Engine.items.fetchLocationItems = itemsMock;
 
-    const [toMinHp, toFullHp] = await AutoHealPlease(100, 200, true, false, false);
+    const [toMinHp, toFullHp] = await AutoHealPlease(500, 100, 200, true, false, false);
 
     expect(toMinHp).toBe(100);
     expect(toFullHp).toBe(200);
     expect(gMock.mock.calls).toHaveLength(0);
-    expect(itemsMock.mock.calls).toHaveLength(gMock.mock.calls.length + 2);
+    expect(itemsMock.mock.calls).toHaveLength(gMock.mock.calls.length + 1);
   });
   test("Should not use any item and change hp - only normal items", async () => {
     const items: Item[] = [
@@ -71,12 +71,12 @@ describe("No potions", () => {
     window.Engine.items.fetchLocationItems = itemsMock;
     itemsMock.mockReturnValue(items);
 
-    const [toMinHp, toFullHp] = await AutoHealPlease(100, 200, true, false, false);
+    const [toMinHp, toFullHp] = await AutoHealPlease(500, 100, 200, true, false, false);
 
     expect(toMinHp).toBe(100);
     expect(toFullHp).toBe(200);
     expect(gMock.mock.calls).toHaveLength(0);
-    expect(itemsMock.mock.calls).toHaveLength(gMock.mock.calls.length + 2);
+    expect(itemsMock.mock.calls).toHaveLength(gMock.mock.calls.length + 1);
   });
 });
 
@@ -107,13 +107,13 @@ describe("Normal potions", () => {
     window.Engine.items.fetchLocationItems = itemsMock;
     itemsMock.mockReturnValue(items);
 
-    const [toMinHp, toFullHp] = await AutoHealPlease(100, 200, true, false, false);
+    const [toMinHp, toFullHp] = await AutoHealPlease(500, 100, 200, true, false, false);
 
     expect(toMinHp).toBe(95);
     expect(toFullHp).toBe(195);
     expect(gMock.mock.calls).toHaveLength(1);
     expect(gMock.mock.calls[0][0]).toBe("moveitem&st=1&id=1");
-    expect(itemsMock.mock.calls).toHaveLength(gMock.mock.calls.length + 2);
+    expect(itemsMock.mock.calls).toHaveLength(gMock.mock.calls.length + 1);
   });
   test("Should heal for 5 small potions and use all", async () => {
     const items: Item[] = [
@@ -151,7 +151,7 @@ describe("Normal potions", () => {
     window.Engine.items.fetchLocationItems = itemsMock;
     itemsMock.mockReturnValue(items);
 
-    const [toMinHp, toFullHp] = await AutoHealPlease(100, 200, true, false, false);
+    const [toMinHp, toFullHp] = await AutoHealPlease(500, 100, 200, true, false, false);
 
     expect(toMinHp).toBe(55);
     expect(toFullHp).toBe(155);
@@ -161,7 +161,7 @@ describe("Normal potions", () => {
     expect(gMock.mock.calls[2][0]).toBe("moveitem&st=1&id=3");
     expect(gMock.mock.calls[3][0]).toBe("moveitem&st=1&id=1");
     expect(gMock.mock.calls[4][0]).toBe("moveitem&st=1&id=1");
-    expect(itemsMock.mock.calls).toHaveLength(gMock.mock.calls.length + 2);
+    expect(itemsMock.mock.calls).toHaveLength(gMock.mock.calls.length + 1);
   });
   test("Should prefer 160hp potion over 60hp for 200hp to full and 100hp to min and use one", async () => {
     const items: Item[] = [
@@ -194,13 +194,13 @@ describe("Normal potions", () => {
     window.Engine.items.fetchLocationItems = itemsMock;
     itemsMock.mockReturnValue(items);
 
-    const [toMinHp, toFullHp] = await AutoHealPlease(100, 200, true, false, false);
+    const [toMinHp, toFullHp] = await AutoHealPlease(500, 100, 200, true, false, false);
 
     expect(toMinHp).toBe(0);
     expect(toFullHp).toBe(40);
     expect(gMock.mock.calls).toHaveLength(1);
     expect(gMock.mock.calls[0][0]).toBe("moveitem&st=1&id=2");
-    expect(itemsMock.mock.calls).toHaveLength(gMock.mock.calls.length + 1);
+    expect(itemsMock.mock.calls).toHaveLength(gMock.mock.calls.length);
   });
   test("Should prefer 5hp potion over 250hp for 200hp to full and 100hp to min but use both", async () => {
     // this is slightly not optimal but current algorithm is greedy
@@ -235,14 +235,14 @@ describe("Normal potions", () => {
     window.Engine.items.fetchLocationItems = itemsMock;
     itemsMock.mockReturnValue(items);
 
-    const [toMinHp, toFullHp] = await AutoHealPlease(100, 200, true, false, false);
+    const [toMinHp, toFullHp] = await AutoHealPlease(500, 100, 200, true, false, false);
 
     expect(toMinHp).toBe(0);
     expect(toFullHp).toBe(0);
     expect(gMock.mock.calls).toHaveLength(2);
     expect(gMock.mock.calls[0][0]).toBe("moveitem&st=1&id=1");
     expect(gMock.mock.calls[1][0]).toBe("moveitem&st=1&id=2");
-    expect(itemsMock.mock.calls).toHaveLength(gMock.mock.calls.length + 1);
+    expect(itemsMock.mock.calls).toHaveLength(gMock.mock.calls.length);
   });
   test("Should prefer 250hp potion over 300hp for 200hp to full and 100hp to min and use one", async () => {
     const items: Item[] = [
@@ -275,13 +275,13 @@ describe("Normal potions", () => {
     window.Engine.items.fetchLocationItems = itemsMock;
     itemsMock.mockReturnValue(items);
 
-    const [toMinHp, toFullHp] = await AutoHealPlease(100, 200, true, false, false);
+    const [toMinHp, toFullHp] = await AutoHealPlease(500, 100, 200, true, false, false);
 
     expect(toMinHp).toBe(0);
     expect(toFullHp).toBe(0);
     expect(gMock.mock.calls).toHaveLength(1);
     expect(gMock.mock.calls[0][0]).toBe("moveitem&st=1&id=2");
-    expect(itemsMock.mock.calls).toHaveLength(gMock.mock.calls.length + 1);
+    expect(itemsMock.mock.calls).toHaveLength(gMock.mock.calls.length);
   });
   test("Should prefer less amount 100hp potion over more amount 100hp potions or 99hp", async () => {
     const items: Item[] = [
@@ -334,12 +334,12 @@ describe("Normal potions", () => {
     window.Engine.items.fetchLocationItems = itemsMock;
     itemsMock.mockReturnValue(items);
 
-    const [toMinHp, toFullHp] = await AutoHealPlease(100, 200, true, false, false);
+    const [toMinHp, toFullHp] = await AutoHealPlease(500, 100, 200, true, false, false);
 
     expect(toMinHp).toBe(0);
     expect(toFullHp).toBe(100);
     expect(gMock.mock.calls).toHaveLength(1);
     expect(gMock.mock.calls[0][0]).toBe("moveitem&st=1&id=3");
-    expect(itemsMock.mock.calls).toHaveLength(gMock.mock.calls.length + 1);
+    expect(itemsMock.mock.calls).toHaveLength(gMock.mock.calls.length);
   });
 });

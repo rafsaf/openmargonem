@@ -51,16 +51,16 @@ const AutoHealOptUsePercentage: AddonOption = {
 };
 
 const getToFullHp = () => {
-  return Math.max(window.Engine.hero.d.warrior_stats.maxhp - window.Engine.hero.d.warrior_stats.hp, 0);
+  const maxHp = window.Engine.hero.d.warrior_stats.maxhp;
+  return Math.max(maxHp - window.Engine.hero.d.warrior_stats.hp, 0);
 };
 const getToMinHp = (minHealth: number) => {
-  return Math.max(
-    (minHealth / 100) * window.Engine.hero.d.warrior_stats.maxhp - window.Engine.hero.d.warrior_stats.hp,
-    0
-  );
+  const maxHp = window.Engine.hero.d.warrior_stats.maxhp;
+  return Math.max((minHealth / 100) * maxHp - window.Engine.hero.d.warrior_stats.hp, 0);
 };
 
 const WarriorAutoHeal = async () => {
+  const maxHp = window.Engine.hero.d.warrior_stats.maxhp;
   const minHealth = GetOptionValue("openmargonem-1", AutoHealOptMinHealth);
   const toMinHp = getToMinHp(minHealth);
   if (toMinHp === 0 || window.Engine.dead) {
@@ -71,27 +71,41 @@ const WarriorAutoHeal = async () => {
   const useNormal = GetOptionValue("openmargonem-1", AutoHealOptUseNormal) === 1;
   const usePerc = GetOptionValue("openmargonem-1", AutoHealOptUsePercentage) === 1;
   const useFull = GetOptionValue("openmargonem-1", AutoHealOptUseFull) === 1;
-  return AutoHealPlease(toMinHp, toFullHp, useNormal, usePerc, useFull);
+  return AutoHealPlease(maxHp, toMinHp, toFullHp, useNormal, usePerc, useFull);
 };
 
 export const AutoHealPlease = async (
+  maxHp: number,
   toMinHp: number,
   toFullHp: number,
   useNormal: boolean,
   usePerc: boolean,
   useFull: boolean
 ) => {
-  if (useNormal) {
-    let items: Item[] = window.Engine.items.fetchLocationItems("g").filter((item: Item) => {
-      return item._cachedStats.leczy !== undefined;
-    });
+  if (useNormal || usePerc) {
+    const itemGetHeal = (item: Item) => {
+      if (item._cachedStats.leczy !== undefined) {
+        return parseInt(item._cachedStats.leczy!);
+      } else {
+        const percent = parseInt(item._cachedStats.perheal!);
+        return Math.round((percent / 100) * maxHp);
+      }
+    };
+
     while (toMinHp > 0) {
+      let items: Item[];
       items = window.Engine.items.fetchLocationItems("g").filter((item: Item) => {
-        return item._cachedStats.leczy !== undefined;
+        if (useNormal && usePerc) {
+          return item._cachedStats.leczy !== undefined || item._cachedStats.perheal !== undefined;
+        } else if (useNormal) {
+          return item._cachedStats.leczy !== undefined;
+        } else if (usePerc) {
+          return item._cachedStats.perheal !== undefined;
+        }
       });
       items.sort((item1: Item, item2: Item) => {
-        const heal1 = parseInt(item1._cachedStats.leczy!);
-        const heal2 = parseInt(item2._cachedStats.leczy!);
+        const heal1 = itemGetHeal(item1);
+        const heal2 = itemGetHeal(item2);
 
         if (heal1 > toFullHp && heal2 > toFullHp) {
           // case1 both potions are more to than full hp
@@ -125,14 +139,41 @@ export const AutoHealPlease = async (
       if (items.length === 0) {
         break;
       }
-      console.debug("openmargonem: ah: sorted normal potions", items);
+
       window._g(`moveitem&st=1&id=${items[0].id}`);
-      console.log(`openmargonem: ah: using ${items[0].name} (${items[0]._cachedStats.leczy}hp)`);
+      console.log(`openmargonem: ah: using ${items[0].name}`);
 
       await Sleep(300);
 
-      toMinHp = Math.max(toMinHp - parseInt(items[0]._cachedStats.leczy!), 0);
-      toFullHp = Math.max(toFullHp - parseInt(items[0]._cachedStats.leczy!), 0);
+      toMinHp = Math.max(toMinHp - itemGetHeal(items[0]), 0);
+      toFullHp = Math.max(toFullHp - itemGetHeal(items[0]), 0);
+    }
+  }
+  if (toMinHp === 0) {
+    return [toMinHp, toFullHp];
+  }
+  if (useFull) {
+    let items: Item[];
+    items = window.Engine.items.fetchLocationItems("g").filter((item: Item) => {
+      return item._cachedStats.fullheal !== undefined;
+    });
+    items.sort((item1: Item, item2: Item) => {
+      const fullHeal1 = parseInt(item1._cachedStats.fullheal!);
+      const fullHeal2 = parseInt(item2._cachedStats.fullheal!);
+      // always smallest full heal potion is better
+      return fullHeal1 - fullHeal2;
+    });
+    for (const item of items) {
+      if (toMinHp === 0) {
+        break;
+      }
+      window._g(`moveitem&st=1&id=${item.id}`);
+      console.log(`openmargonem: ah: using ${item.name}`);
+
+      await Sleep(300);
+
+      toMinHp = Math.max(toMinHp - parseInt(item._cachedStats.fullheal!), 0);
+      toFullHp = Math.max(toFullHp - parseInt(item._cachedStats.fullheal!), 0);
     }
   }
   return [toMinHp, toFullHp];
