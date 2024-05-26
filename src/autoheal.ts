@@ -173,16 +173,19 @@ export const AutoHealPlease = async (data: AHData) => {
       return fullHeal1 - fullHeal2;
     });
     for (const item of items) {
-      if (data.toMinHp === 0) {
-        break;
+      const amount = parseInt(item._cachedStats.amount!);
+      for (let i = 0; i < amount; i++) {
+        if (data.toMinHp === 0) {
+          break;
+        }
+        window._g(`moveitem&st=1&id=${item.id}`);
+        console.log(`openmargonem: ah: using ${item.name}`);
+
+        await Sleep(300);
+
+        data.toMinHp = Math.max(data.toMinHp - parseInt(item._cachedStats.fullheal!), 0);
+        data.toFullHp = Math.max(data.toFullHp - parseInt(item._cachedStats.fullheal!), 0);
       }
-      window._g(`moveitem&st=1&id=${item.id}`);
-      console.log(`openmargonem: ah: using ${item.name}`);
-
-      await Sleep(300);
-
-      data.toMinHp = Math.max(data.toMinHp - parseInt(item._cachedStats.fullheal!), 0);
-      data.toFullHp = Math.max(data.toFullHp - parseInt(item._cachedStats.fullheal!), 0);
     }
   }
   return [data.toMinHp, data.toFullHp];

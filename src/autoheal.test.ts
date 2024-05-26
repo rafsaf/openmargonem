@@ -544,3 +544,149 @@ describe("Percent potions", () => {
     expect(itemsMock.mock.calls).toHaveLength(gMock.mock.calls.length);
   });
 });
+
+describe("Full potions", () => {
+  test("Should heal for single potion and use it", async () => {
+    const items: Item[] = [
+      {
+        id: "1",
+        name: "1",
+        _cachedStats: { amount: "1", leczy: undefined, perheal: undefined, fullheal: "5" },
+      },
+      {
+        id: "NORMAL",
+        name: "NORMAL",
+        _cachedStats: { amount: "1", leczy: undefined, perheal: undefined, fullheal: undefined },
+      },
+      {
+        id: "NORMAL2",
+        name: "NORMAL2",
+        _cachedStats: { amount: "6", leczy: undefined, perheal: undefined, fullheal: undefined },
+      },
+    ];
+
+    const gMock = jest.fn(CreateGMock(items));
+    window._g = gMock;
+
+    const itemsMock = jest.fn();
+    window.Engine.items.fetchLocationItems = itemsMock;
+    itemsMock.mockReturnValue(items);
+
+    const [toMinHp, toFullHp] = await AutoHealPlease({
+      maxHp: 500,
+      toFullHp: 200,
+      toMinHp: 100,
+      useNormal: false,
+      usePerc: false,
+      useFull: true,
+    });
+
+    expect(toMinHp).toBe(95);
+    expect(toFullHp).toBe(195);
+    expect(gMock.mock.calls).toHaveLength(1);
+    expect(gMock.mock.calls[0][0]).toBe("moveitem&st=1&id=1");
+    expect(itemsMock.mock.calls).toHaveLength(1);
+  });
+  test("Should heal for 5 small potions and use all", async () => {
+    const items: Item[] = [
+      {
+        id: "1",
+        name: "1",
+        _cachedStats: { amount: "2", leczy: undefined, perheal: undefined, fullheal: "5" },
+      },
+      {
+        id: "2",
+        name: "2",
+        _cachedStats: { amount: "1", leczy: undefined, perheal: undefined, fullheal: "15" },
+      },
+      {
+        id: "3",
+        name: "3",
+        _cachedStats: { amount: "2", leczy: undefined, perheal: undefined, fullheal: "10" },
+      },
+      {
+        id: "NORMAL",
+        name: "NORMAL",
+        _cachedStats: { amount: "1", leczy: undefined, perheal: undefined, fullheal: undefined },
+      },
+      {
+        id: "NORMAL2",
+        name: "NORMAL2",
+        _cachedStats: { amount: "6", leczy: undefined, perheal: undefined, fullheal: undefined },
+      },
+    ];
+
+    const gMock = jest.fn(CreateGMock(items));
+    window._g = gMock;
+
+    const itemsMock = jest.fn();
+    window.Engine.items.fetchLocationItems = itemsMock;
+    itemsMock.mockReturnValue(items);
+
+    const [toMinHp, toFullHp] = await AutoHealPlease({
+      maxHp: 500,
+      toFullHp: 200,
+      toMinHp: 100,
+      useNormal: false,
+      usePerc: false,
+      useFull: true,
+    });
+
+    expect(toMinHp).toBe(55);
+    expect(toFullHp).toBe(155);
+    expect(gMock.mock.calls).toHaveLength(5);
+    expect(gMock.mock.calls[0][0]).toBe("moveitem&st=1&id=1");
+    expect(gMock.mock.calls[1][0]).toBe("moveitem&st=1&id=1");
+    expect(gMock.mock.calls[2][0]).toBe("moveitem&st=1&id=3");
+    expect(gMock.mock.calls[3][0]).toBe("moveitem&st=1&id=3");
+    expect(gMock.mock.calls[4][0]).toBe("moveitem&st=1&id=2");
+    expect(itemsMock.mock.calls).toHaveLength(1);
+  });
+  test("Should prefer 60hp potion over 160hp for 200hp to full and 100hp to min and use one both to full hp", async () => {
+    const items: Item[] = [
+      {
+        id: "1",
+        name: "1",
+        _cachedStats: { amount: "1", leczy: undefined, perheal: undefined, fullheal: "60" },
+      },
+      {
+        id: "2",
+        name: "2",
+        _cachedStats: { amount: "1", leczy: undefined, perheal: undefined, fullheal: "160" },
+      },
+      {
+        id: "NORMAL",
+        name: "NORMAL",
+        _cachedStats: { amount: "1", leczy: undefined, perheal: undefined, fullheal: undefined },
+      },
+      {
+        id: "NORMAL2",
+        name: "NORMAL2",
+        _cachedStats: { amount: "6", leczy: undefined, perheal: undefined, fullheal: undefined },
+      },
+    ];
+
+    const gMock = jest.fn(CreateGMock(items));
+    window._g = gMock;
+
+    const itemsMock = jest.fn();
+    window.Engine.items.fetchLocationItems = itemsMock;
+    itemsMock.mockReturnValue(items);
+
+    const [toMinHp, toFullHp] = await AutoHealPlease({
+      maxHp: 500,
+      toFullHp: 200,
+      toMinHp: 100,
+      useNormal: false,
+      usePerc: false,
+      useFull: true,
+    });
+
+    expect(toMinHp).toBe(0);
+    expect(toFullHp).toBe(0);
+    expect(gMock.mock.calls).toHaveLength(2);
+    expect(gMock.mock.calls[0][0]).toBe("moveitem&st=1&id=1");
+    expect(gMock.mock.calls[1][0]).toBe("moveitem&st=1&id=2");
+    expect(itemsMock.mock.calls).toHaveLength(1);
+  });
+});
