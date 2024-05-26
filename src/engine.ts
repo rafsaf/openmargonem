@@ -14,8 +14,6 @@ GNU Affero General Public License for more details.
 
 You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <https://www.gnu.org/licenses/>.
-
-Source code: https://github.com/rafsaf/openmargonem
 */
 interface MargonemEngine {
   addonsPanel: AddonsPanel;
@@ -39,7 +37,8 @@ interface Item {
 }
 
 interface ItemStats {
-  amount: string;
+  // usually available but for fullheal potions it is undefined
+  amount: string | undefined;
   // normal healing potions eg. 5000 hp
   leczy: string | undefined;
   // percentage healing potions eg. always 15% hp

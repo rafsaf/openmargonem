@@ -1,3 +1,21 @@
+/*
+openmargonem  
+Copyright (C) 2024  Rafał Safin <rafal.safin@rafsaf.pl>
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU Affero General Public License as published
+by the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU Affero General Public License for more details.
+
+You should have received a copy of the GNU Affero General Public License
+along with this program.  If not, see <https://www.gnu.org/licenses/>.
+*/
+
 import { describe, expect, test, beforeEach } from "@jest/globals";
 import { AutoHealPlease } from "./autoheal";
 
@@ -17,7 +35,8 @@ const CreateGMock = (items: Item[]) => (cmd: string) => {
   if (itemToChange === undefined) {
     throw "no item with such id";
   }
-  const itemToChangeAmount = parseInt(itemToChange._cachedStats.amount);
+  const itemToChangeAmount =
+    itemToChange._cachedStats.amount !== undefined ? parseInt(itemToChange._cachedStats.amount) : 1;
   if (itemToChangeAmount === 1) {
     const i = items.indexOf(itemToChange);
     items.splice(i, 1);
@@ -551,7 +570,7 @@ describe("Full potions", () => {
       {
         id: "1",
         name: "1",
-        _cachedStats: { amount: "1", leczy: undefined, perheal: undefined, fullheal: "5" },
+        _cachedStats: { amount: undefined, leczy: undefined, perheal: undefined, fullheal: "5" },
       },
       {
         id: "NORMAL",
@@ -590,19 +609,29 @@ describe("Full potions", () => {
   test("Should heal for 5 small potions and use all", async () => {
     const items: Item[] = [
       {
-        id: "1",
-        name: "1",
-        _cachedStats: { amount: "2", leczy: undefined, perheal: undefined, fullheal: "5" },
+        id: "1a",
+        name: "1a",
+        _cachedStats: { amount: undefined, leczy: undefined, perheal: undefined, fullheal: "5" },
+      },
+      {
+        id: "1b",
+        name: "1b",
+        _cachedStats: { amount: undefined, leczy: undefined, perheal: undefined, fullheal: "5" },
       },
       {
         id: "2",
         name: "2",
-        _cachedStats: { amount: "1", leczy: undefined, perheal: undefined, fullheal: "15" },
+        _cachedStats: { amount: undefined, leczy: undefined, perheal: undefined, fullheal: "15" },
       },
       {
-        id: "3",
-        name: "3",
-        _cachedStats: { amount: "2", leczy: undefined, perheal: undefined, fullheal: "10" },
+        id: "3a",
+        name: "3a",
+        _cachedStats: { amount: undefined, leczy: undefined, perheal: undefined, fullheal: "10" },
+      },
+      {
+        id: "3b",
+        name: "3b",
+        _cachedStats: { amount: undefined, leczy: undefined, perheal: undefined, fullheal: "10" },
       },
       {
         id: "NORMAL",
@@ -635,10 +664,10 @@ describe("Full potions", () => {
     expect(toMinHp).toBe(55);
     expect(toFullHp).toBe(155);
     expect(gMock.mock.calls).toHaveLength(5);
-    expect(gMock.mock.calls[0][0]).toBe("moveitem&st=1&id=1");
-    expect(gMock.mock.calls[1][0]).toBe("moveitem&st=1&id=1");
-    expect(gMock.mock.calls[2][0]).toBe("moveitem&st=1&id=3");
-    expect(gMock.mock.calls[3][0]).toBe("moveitem&st=1&id=3");
+    expect(gMock.mock.calls[0][0]).toBe("moveitem&st=1&id=1a");
+    expect(gMock.mock.calls[1][0]).toBe("moveitem&st=1&id=1b");
+    expect(gMock.mock.calls[2][0]).toBe("moveitem&st=1&id=3a");
+    expect(gMock.mock.calls[3][0]).toBe("moveitem&st=1&id=3b");
     expect(gMock.mock.calls[4][0]).toBe("moveitem&st=1&id=2");
     expect(itemsMock.mock.calls).toHaveLength(1);
   });
@@ -647,12 +676,12 @@ describe("Full potions", () => {
       {
         id: "1",
         name: "1",
-        _cachedStats: { amount: "1", leczy: undefined, perheal: undefined, fullheal: "60" },
+        _cachedStats: { amount: undefined, leczy: undefined, perheal: undefined, fullheal: "60" },
       },
       {
         id: "2",
         name: "2",
-        _cachedStats: { amount: "1", leczy: undefined, perheal: undefined, fullheal: "160" },
+        _cachedStats: { amount: undefined, leczy: undefined, perheal: undefined, fullheal: "160" },
       },
       {
         id: "NORMAL",
@@ -688,5 +717,70 @@ describe("Full potions", () => {
     expect(gMock.mock.calls[0][0]).toBe("moveitem&st=1&id=1");
     expect(gMock.mock.calls[1][0]).toBe("moveitem&st=1&id=2");
     expect(itemsMock.mock.calls).toHaveLength(1);
+  });
+});
+
+describe("All options mixed", () => {
+  test("Should use all normal, percent and fullheal available", async () => {
+    const items: Item[] = [
+      {
+        id: "1",
+        name: "1",
+        _cachedStats: { amount: "2", leczy: "10", perheal: undefined, fullheal: undefined },
+      },
+      {
+        id: "2",
+        name: "2",
+        _cachedStats: { amount: "3", leczy: undefined, perheal: "1", fullheal: undefined },
+      },
+      {
+        id: "3",
+        name: "3",
+        _cachedStats: { amount: undefined, leczy: undefined, perheal: undefined, fullheal: "30" },
+      },
+      {
+        id: "4",
+        name: "4",
+        _cachedStats: { amount: undefined, leczy: undefined, perheal: undefined, fullheal: "20" },
+      },
+      {
+        id: "NORMAL",
+        name: "NORMAL",
+        _cachedStats: { amount: "1", leczy: undefined, perheal: undefined, fullheal: undefined },
+      },
+      {
+        id: "NORMAL2",
+        name: "NORMAL2",
+        _cachedStats: { amount: "6", leczy: undefined, perheal: undefined, fullheal: undefined },
+      },
+    ];
+
+    const gMock = jest.fn(CreateGMock(items));
+    window._g = gMock;
+
+    const itemsMock = jest.fn();
+    window.Engine.items.fetchLocationItems = itemsMock;
+    itemsMock.mockReturnValue(items);
+
+    const [toMinHp, toFullHp] = await AutoHealPlease({
+      maxHp: 500,
+      toFullHp: 200,
+      toMinHp: 100,
+      useNormal: true,
+      usePerc: true,
+      useFull: true,
+    });
+
+    expect(toMinHp).toBe(15);
+    expect(toFullHp).toBe(115);
+    expect(gMock.mock.calls).toHaveLength(7);
+    expect(gMock.mock.calls[0][0]).toBe("moveitem&st=1&id=1");
+    expect(gMock.mock.calls[1][0]).toBe("moveitem&st=1&id=1");
+    expect(gMock.mock.calls[2][0]).toBe("moveitem&st=1&id=2");
+    expect(gMock.mock.calls[3][0]).toBe("moveitem&st=1&id=2");
+    expect(gMock.mock.calls[4][0]).toBe("moveitem&st=1&id=2");
+    expect(gMock.mock.calls[5][0]).toBe("moveitem&st=1&id=4");
+    expect(gMock.mock.calls[6][0]).toBe("moveitem&st=1&id=3");
+    expect(itemsMock.mock.calls).toHaveLength(gMock.mock.calls.length);
   });
 });

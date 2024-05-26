@@ -14,8 +14,6 @@ GNU Affero General Public License for more details.
 
 You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <https://www.gnu.org/licenses/>.
-
-Source code: https://github.com/rafsaf/openmargonem
 */
 
 export enum AddonType {
@@ -85,6 +83,9 @@ const AddonInput = (addon: Addon, option: AddonOption): string => {
 
     label.append(rangeSpan);
 
+    // this is not perfect!
+    // problem is that we must pass on generated options as *string* to description and then show it
+    // so input.oninput = () => {...} syntax will have no effect, therefore some blax hacky stuff
     input.setAttribute(
       "oninput",
       `localStorage.setItem('${uniqueId}', this.value);const label = document.getElementById('${uniqueId}-range');if (label !== null) {label.textContent = this.value;}`
@@ -108,7 +109,7 @@ const AddonInput = (addon: Addon, option: AddonOption): string => {
 
 export const AddonCreate = (addon: Addon) => {
   if (!addon.id.startsWith("openmargonem")) {
-    console.error(`name of addon: '${addon.id}' does not contain required 'openamrgonem' prefix`);
+    console.error(`name of addon: '${addon.id}' does not contain required 'openmargonem' prefix`);
     return;
   }
   const addonLang: AddonLanguage = addon[window._l()];

@@ -14,8 +14,6 @@ GNU Affero General Public License for more details.
 
 You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <https://www.gnu.org/licenses/>.
-
-Source code: https://github.com/rafsaf/openmargonem
 */
 
 import { AddonType, Addon, AddonOption, AddonCreate, GetOptionValue } from "./addon";
@@ -173,19 +171,16 @@ export const AutoHealPlease = async (data: AHData) => {
       return fullHeal1 - fullHeal2;
     });
     for (const item of items) {
-      const amount = parseInt(item._cachedStats.amount!);
-      for (let i = 0; i < amount; i++) {
-        if (data.toMinHp === 0) {
-          break;
-        }
-        window._g(`moveitem&st=1&id=${item.id}`);
-        console.log(`openmargonem: ah: using ${item.name}`);
+      // fullheal potions have always undefined amount (meaning amount === 1)
+      // therefore only one loop
 
-        await Sleep(300);
+      window._g(`moveitem&st=1&id=${item.id}`);
+      console.log(`openmargonem: ah: using ${item.name}`);
 
-        data.toMinHp = Math.max(data.toMinHp - parseInt(item._cachedStats.fullheal!), 0);
-        data.toFullHp = Math.max(data.toFullHp - parseInt(item._cachedStats.fullheal!), 0);
-      }
+      await Sleep(300);
+
+      data.toMinHp = Math.max(data.toMinHp - parseInt(item._cachedStats.fullheal!), 0);
+      data.toFullHp = Math.max(data.toFullHp - parseInt(item._cachedStats.fullheal!), 0);
     }
   }
   return [data.toMinHp, data.toFullHp];
