@@ -11,7 +11,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          fetch-tags: true
+          fetch-depth: 0
       - uses: actions/setup-node@v4
         with:
           node-version: 20
@@ -54,3 +54,7 @@ jobs:
           branch: gh-pages
           folder: index
           clean: false
+      - name: Release assets upload
+        uses: softprops/action-gh-release@v2
+        with:
+          files: public/openmargonem.${{ github.ref_name }}.user.js
