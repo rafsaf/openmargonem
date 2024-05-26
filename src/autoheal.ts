@@ -22,8 +22,12 @@ import { AddonType, Addon, AddonOption, AddonCreate, GetOptionValue } from "./ad
 import Sleep from "./sleep";
 
 interface AHData {
+  maxHp: number;
   toMinHp: number;
   toFullHp: number;
+  useNormal: boolean;
+  usePerc: boolean;
+  useFull: boolean;
 }
 
 const AutoHealOptMinHealth: AddonOption = {
@@ -76,34 +80,35 @@ const WarriorAutoHeal = async () => {
   const useNormal = GetOptionValue("openmargonem-1", AutoHealOptUseNormal) === 1;
   const usePerc = GetOptionValue("openmargonem-1", AutoHealOptUsePercentage) === 1;
   const useFull = GetOptionValue("openmargonem-1", AutoHealOptUseFull) === 1;
-  return AutoHealPlease(maxHp, {toFullHp: toFullHp, toMinHp: toMinHp}, useNormal, usePerc, useFull);
+  return AutoHealPlease({
+    maxHp: maxHp,
+    toFullHp: toFullHp,
+    toMinHp: toMinHp,
+    useNormal: useNormal,
+    usePerc: usePerc,
+    useFull: useFull,
+  });
 };
 
-export const AutoHealPlease = async (
-  maxHp: number,
-  data: AHData,
-  useNormal: boolean,
-  usePerc: boolean,
-  useFull: boolean
-) => {
-  if (useNormal || usePerc) {
+export const AutoHealPlease = async (data: AHData) => {
+  if (data.useNormal || data.usePerc) {
     const itemGetHeal = (item: Item) => {
       if (item._cachedStats.leczy !== undefined) {
         return parseInt(item._cachedStats.leczy!);
       } else {
         const percent = parseInt(item._cachedStats.perheal!);
-        return Math.round((percent / 100) * maxHp);
+        return Math.round((percent / 100) * data.maxHp);
       }
     };
 
     while (data.toMinHp > 0) {
       let items: Item[];
       items = window.Engine.items.fetchLocationItems("g").filter((item: Item) => {
-        if (useNormal && usePerc) {
+        if (data.useNormal && data.usePerc) {
           return item._cachedStats.leczy !== undefined || item._cachedStats.perheal !== undefined;
-        } else if (useNormal) {
+        } else if (data.useNormal) {
           return item._cachedStats.leczy !== undefined;
-        } else if (usePerc) {
+        } else if (data.usePerc) {
           return item._cachedStats.perheal !== undefined;
         }
       });
@@ -156,7 +161,7 @@ export const AutoHealPlease = async (
   if (data.toMinHp === 0) {
     return [data.toMinHp, data.toFullHp];
   }
-  if (useFull) {
+  if (data.useFull) {
     let items: Item[];
     items = window.Engine.items.fetchLocationItems("g").filter((item: Item) => {
       return item._cachedStats.fullheal !== undefined;
