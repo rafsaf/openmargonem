@@ -5,6 +5,8 @@
 // @author       Rafał Safin <rafal.safin@rafsaf.pl>
 // @copyright    GNU AGPLv3
 // @source       https://github.com/rafsaf/openmargonem
+// @updateURL    https://rafsaf.github.io/openmargonem/openmargonem.latest.user.js
+// @downloadURL  https://rafsaf.github.io/openmargonem/openmargonem.latest.user.js
 // @match        https://*.margonem.pl/*
 // @match        https://*.margonem.com/*
 // @exclude      https://commons.margonem.pl/*
