@@ -1,0 +1,47 @@
+name: Build and Deploy
+on:
+  release:
+    types:
+      - created
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+      - name: Install dependencies
+        run: |
+          npm install
+      - name: Build
+        run: |
+          npm run build
+          rm -f public/openmargonem.bundle.js
+          cp public/openmargonem.user.js public/openmargonem.${{ github.ref_name }}.user.js
+          mv public/openmargonem.user.js public/openmargonem.latest.user.js
+      - name: Deploy scripts
+        uses: JamesIves/github-pages-deploy-action@v4
+        with:
+          branch: gh-pages
+          folder: public
+          clean: false
+
+      - name: build index.js
+        run: |
+          mkdir index
+          cd index
+          echo "<html><body style='font-size: xx-large;'><h1><b>OpenMargonem version listing</b></h1>" > index.html
+          echo "<a href='./openmargonem.latest.user.js'>openmargonem.latest.user.js</a><br/>" \; >> index.html
+          for tag in $(git tag --sort=-creatordate)
+          do
+            echo "<a href='./openmargonem.${tag}.user.js'>openmargonem.${tag}.user.js</a><br/>" \; >> index.html
+          done
+          echo "</body></html>" >> index.html
+      - name: Deploy index.html
+        uses: JamesIves/github-pages-deploy-action@v4
+        with:
+          branch: gh-pages
+          folder: index
+          clean: false

@@ -4,7 +4,7 @@
   "description": "Free and open source margonem scripts",
   "main": "build.js",
   "scripts": {
-    "build": "node build.js && cat openmargonem.base.user.js > public/openmargonem.user.js && cat public/bundle.js >> public/openmargonem.user.js",
+    "build": "node build.js && cat openmargonem.base.user.js > public/openmargonem.user.js && cat public/openmargonem.bundle.js >> public/openmargonem.user.js",
     "test": "jest"
   },
   "babel": {
