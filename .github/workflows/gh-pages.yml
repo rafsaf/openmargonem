@@ -10,6 +10,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-tags: true
       - uses: actions/setup-node@v4
         with:
           node-version: 20
@@ -17,12 +19,15 @@ jobs:
       - name: Install dependencies
         run: |
           npm install
+      - name: Set release date
+        run: |
+          echo "RELEASE_DATE=$(date --rfc-3339=seconds)" >> ${GITHUB_ENV}
       - name: Build
         run: |
           npm run build
           rm -f public/openmargonem.bundle.js
           sed -i "s/__version__/${{ github.ref_name }}/g" public/openmargonem.user.js
-          CURRENT_DATE=`date +"%Y-%m-%d %T"` sed -i "s/__compiled_at__/$CURRENT_DATE/g" public/openmargonem.user.js
+          sed -i "s/__compiled_at__/$RELEASE_DATE/g" public/openmargonem.user.js
           cp public/openmargonem.user.js public/openmargonem.${{ github.ref_name }}.user.js
           mv public/openmargonem.user.js public/openmargonem.latest.user.js
       - name: Deploy scripts
